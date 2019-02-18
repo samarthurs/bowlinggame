@@ -55,4 +55,14 @@ public class BowlingGameTest {
         Assertions.assertEquals(170, game.score());
     }
 
+    @Test
+    public void scoreAllSpares(){
+        String inputPins = "6 4 8 2 4 6 6 4 5 5 2 8 4 6 5 5 6 4 8 2 10";
+        InputStream is = new ByteArrayInputStream(inputPins.getBytes());
+        System.setIn(is);
+        Assertions.assertEquals(158, game.score());
+    }
+
+
+
 }
