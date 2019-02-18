@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class BowlingGame {
-    
+
     public int score() {
-        int score = 0;
+        int score;
         Scanner scanner = new Scanner(System.in);
 
         boolean isStrike = false;
@@ -59,7 +59,6 @@ public class BowlingGame {
                         //countStrikeScore(framesScore, frame, currentPinsDown); // this is for Consecutive strikes
                         if (frame > 2) { // if frame is greater than 2, i.,e for example 3, then add currentPinsDown to framesScore[2] and framesScore[1]
                             framesScore[frame - 1] += currentPinsDown; //add the points to previous
-                            //if (framesScore[frame - 2] > 10) {// add to the previous of previous only if prev->prev was a strike. frameScore will be >=10 if it was a previous strike/spare
                             if (!isSpare && framesScore[frame - 2] > 10) {// spare -> strike -> strike. Only if prev->prev( was a Strike)
                                 framesScore[frame - 2] += currentPinsDown; // Add to the previous of previous only if prev->prev was a strike. frameScore will be >=10 if it was a previous strike/spare
                                 isSpare = false; // spare -> strike -> strike
@@ -92,23 +91,7 @@ public class BowlingGame {
                 }
             }// end of 1 or 2 rolls in per Frame
 
-            if (frame == 10 && isStrike) { // Strike on the last frame will earn 2 more rolls
-                System.out.println("Strike on the Last Frame... So roll twice");
-
-                System.out.println("Additional Role 1. Please roll...");
-                int strikeBonusRoll1 = scanner.nextInt();
-                framesScore[frame] += strikeBonusRoll1;
-                framesScore[frame - 1] += strikeBonusRoll1; // if it is a strike in 9 and 10 and then, frameScore[9] will be 10 + 10 + strikeRollBonus1
-
-                System.out.println("Additional Role 2. Last roll of the Game. Please Roll...");
-                int strikeBonusRoll2 = scanner.nextInt();
-                framesScore[frame] += strikeBonusRoll2;
-
-            } else if (frame == 10 && isSpare) { //Spare on the last frame will earn 1 more roll
-                System.out.println("Spare on the Last Frame... So roll once more");
-                int spareBonusRoll = scanner.nextInt();
-                framesScore[frame] += spareBonusRoll;
-            }
+            scoreLastFrame(scanner, isStrike, isSpare, framesScore, frame);
 
             framesScore[frame] += pinsDownPerFrame;
             Arrays.stream(framesScore).skip(1).forEach(eachScore -> System.out.print(eachScore + " || "));
@@ -117,6 +100,26 @@ public class BowlingGame {
         }// end of 10 Frames. End of the Game
         score = Arrays.stream(framesScore).sum();
         return score;
+    }
+
+    private void scoreLastFrame(Scanner scanner, boolean isStrike, boolean isSpare, int[] framesScore, int frame) {
+        if (frame == 10 && isStrike) { // Strike on the last frame will earn 2 more rolls
+            System.out.println("Strike on the Last Frame... So roll twice");
+
+            System.out.println("Additional Role 1. Please roll...");
+            int strikeBonusRoll1 = scanner.nextInt();
+            framesScore[frame] += strikeBonusRoll1;
+            framesScore[frame - 1] += strikeBonusRoll1; // if it is a strike in 9 and 10 and then, frameScore[9] will be 10 + 10 + strikeRollBonus1
+
+            System.out.println("Additional Role 2. Last roll of the Game. Please Roll...");
+            int strikeBonusRoll2 = scanner.nextInt();
+            framesScore[frame] += strikeBonusRoll2;
+
+        } else if (frame == 10 && isSpare) { //Spare on the last frame will earn 1 more roll
+            System.out.println("Spare on the Last Frame... So roll once more");
+            int spareBonusRoll = scanner.nextInt();
+            framesScore[frame] += spareBonusRoll;
+        }
     }
 
     private int validatePinsDown(Scanner scanner, int currentPinsDown) {
