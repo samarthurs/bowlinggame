@@ -25,7 +25,7 @@ public class BowlingGame {
 
                 // Validation for the number of pinsDown to be entered
                 // Cannot enter more than 10 at any roll 1 or 2. Cannot enter more (10 - pinsDownRoll1)
-                currentPinsDown = validatePinsDown(scanner, currentPinsDown);
+                currentPinsDown = validatePinsDown(scanner, currentPinsDown, chance, (10 - pinsDownPerFrame));
 
                 pinsDownPerFrame += currentPinsDown; // Add the pinsDown in each roll
 
@@ -36,7 +36,7 @@ public class BowlingGame {
                     if (currentPinsDown == 10) {
                         isStrike = true;
                         System.out.println("It is a Strike !!!X!!! : Frame : " + frame);
-                        if(isSpare && chance == 1){ // A Strike after a Spare. spare --> strike
+                        if (isSpare && chance == 1) { // A Strike after a Spare. spare --> strike
                             framesScore[frame - 1] += currentPinsDown;
                             System.out.println("Score for Frame " + (frame - 1) + " : <><><><>" + (10 + currentPinsDown) + "<><><><>");
                         }
@@ -70,7 +70,7 @@ public class BowlingGame {
                         break; // break because it is a consecutive strike. If it is the first chance and strike, then break
                     } else if (chance == 1 && currentPinsDown < 10) { // after two previous strikes, it is a normal roll i.e., currentPinsDown<10
                         countStrikeScore(framesScore, frame, currentPinsDown); // it is not a consecutive strike. Only prev was a strike. prev->prev was not
-                        if(isSpare)isSpare=false;
+                        if (isSpare) isSpare = false;
 
                     }
 
@@ -95,7 +95,7 @@ public class BowlingGame {
 
             framesScore[frame] += pinsDownPerFrame;
             Arrays.stream(framesScore).skip(1).forEach(eachScore -> System.out.print(eachScore + " || "));
-            System.out.println("Score at the end of the frame : " + frame + " is : --->>>" + Arrays.stream(framesScore).sum() + "<<<---");
+            System.out.println("\nScore at the end of the frame : " + frame + " is : --->>>" + Arrays.stream(framesScore).sum() + "<<<---");
             System.out.println("###############################################################################");
         }// end of 10 Frames. End of the Game
         score = Arrays.stream(framesScore).sum();
@@ -122,12 +122,24 @@ public class BowlingGame {
         }
     }
 
-    private int validatePinsDown(Scanner scanner, int currentPinsDown) {
-        if (currentPinsDown > 10) {
-            System.out.println("Cannot knock more than " + currentPinsDown + " pins at once!!!");
-            System.out.println("Please Re enter the pins to be knocked down");
-            currentPinsDown = scanner.nextInt();
+    private int validatePinsDown(Scanner scanner, int currentPinsDown, int chance, int remainingPins) {
+
+        if (chance == 1) {
+            while (currentPinsDown > 10) {
+                System.out.println("Cannot knock more than 10 pins at the 1st roll of a Frame!!!");
+                System.out.println("Please Re enter the pins to be knocked down");
+                currentPinsDown = scanner.nextInt();
+            }
         }
+
+        if(chance == 2){
+            while(currentPinsDown > remainingPins){
+                System.out.println("Cannot knock more than remaining pins " + remainingPins + "!!!");
+                System.out.println("Please Re enter the pins to be knocked down");
+                currentPinsDown = scanner.nextInt();
+            }
+        }
+
         return currentPinsDown;
     }
 
