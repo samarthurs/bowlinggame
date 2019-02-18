@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class BowlingGame {
-
-    private int[] rolls = new int[21];
-
+    
     public int score() {
         int score = 0;
         Scanner scanner = new Scanner(System.in);
