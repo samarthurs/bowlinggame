@@ -63,6 +63,36 @@ public class BowlingGameTest {
         Assertions.assertEquals(158, game.score());
     }
 
+    @Test
+    public void alternateStrikeAndSpare(){
+        String inputPins = "10 6 4 10 6 4 10 6 4 10 6 4 10 6 4 10";
+        InputStream is = new ByteArrayInputStream(inputPins.getBytes());
+        System.setIn(is);
+        Assertions.assertEquals(200, game.score());
+    }
 
+    @Test
+    public void alternateSpareAndStrike(){
+        String inputPins = "6 4 10 5 5 10 8 2 10 7 3 10 8 2 10 10 10";
+        InputStream is = new ByteArrayInputStream(inputPins.getBytes());
+        System.setIn(is);
+        Assertions.assertEquals(210, game.score());
+    }
+
+    @Test
+    public void fiveSparesAndFiveStrikes(){
+        String inputPins = "6 4 8 2 5 5 7 3 8 2 10 10 10 10 10 10 10";
+        InputStream is = new ByteArrayInputStream(inputPins.getBytes());
+        System.setIn(is);
+        Assertions.assertEquals(238, game.score());
+    }
+
+    @Test
+    public void fiveStrikesAndFiveSpare(){
+        String inputPins = "10 10 10 10 10 6 4 5 5 8 2 7 3 8 2 10";
+        InputStream is = new ByteArrayInputStream(inputPins.getBytes());
+        System.setIn(is);
+        Assertions.assertEquals(224, game.score());
+    }
 
 }
