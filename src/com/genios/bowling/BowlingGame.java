@@ -39,6 +39,7 @@ public class BowlingGame {
                         if (isSpare && chance == 1) { // A Strike after a Spare. spare --> strike
                             framesScore[frame - 1] += currentPinsDown;
                             System.out.println("Score for Frame " + (frame - 1) + " : <><><><>" + (10 + currentPinsDown) + "<><><><>");
+                            //isSpare = false; // spare --> strike, spare is handled now, so set isSpare to false
                         }
                         break; // there is no need to roll the ball for the 2nd time in the current frame as it is a Strike. So break the inner loop
                     }
@@ -59,17 +60,18 @@ public class BowlingGame {
                         //countStrikeScore(framesScore, frame, currentPinsDown); // this is for Consecutive strikes
                         if (frame > 2) { // if frame is greater than 2, i.,e for example 3, then add currentPinsDown to framesScore[2] and framesScore[1]
                             framesScore[frame - 1] += currentPinsDown; //add the points to previous
-                            if (!isSpare && framesScore[frame - 2] > 10) {// spare -> strike -> strike. Only if prev->prev( was a Strike)
-                                framesScore[frame - 2] += currentPinsDown; // Add to the previous of previous only if prev->prev was a strike. frameScore will be >=10 if it was a previous strike/spare
+                            if (!isSpare && framesScore[frame - 2] > 10) { // spare -> strike -> strike. Only if prev->prev( was a Strike), then enter
+                                framesScore[frame - 2] += currentPinsDown; // Add to the previous of previous only if prev->prev was a strike
                                 isSpare = false; // spare -> strike -> strike
+                            } else { // spare -> strike -> strike, cur.prev = strike, cur.prev.prev = spare
+                                isSpare = false; // This is the right time to set isSpare=false
                             }
                         } else {
                             framesScore[frame - 1] += currentPinsDown;
                         }
-
                         break; // break because it is a consecutive strike. If it is the first chance and strike, then break
                     } else if (chance == 1 && currentPinsDown < 10) { // after two previous strikes, it is a normal roll i.e., currentPinsDown<10
-                        countStrikeScore(framesScore, frame, currentPinsDown); // it is not a consecutive strike. Only prev was a strike. prev->prev was not
+                        countStrikeScore(framesScore, frame, currentPinsDown, isSpare); // it is not a consecutive strike. Only prev was a strike. prev->prev was not
                         if (isSpare) isSpare = false;
 
                     }
@@ -109,7 +111,8 @@ public class BowlingGame {
             System.out.println("Additional Role 1. Please roll...");
             int strikeBonusRoll1 = scanner.nextInt();
             framesScore[frame] += strikeBonusRoll1;
-            framesScore[frame - 1] += strikeBonusRoll1; // if it is a strike in 9 and 10 and then, frameScore[9] will be 10 + 10 + strikeRollBonus1
+            if (!isSpare)
+                framesScore[frame - 1] += strikeBonusRoll1; // if it is a strike in 9 and 10 and then, frameScore[9] will be 10 + 10 + strikeRollBonus1
 
             System.out.println("Additional Role 2. Last roll of the Game. Please Roll...");
             int strikeBonusRoll2 = scanner.nextInt();
@@ -132,8 +135,8 @@ public class BowlingGame {
             }
         }
 
-        if(chance == 2){
-            while(currentPinsDown > remainingPins){
+        if (chance == 2) {
+            while (currentPinsDown > remainingPins) {
                 System.out.println("Cannot knock more than remaining pins " + remainingPins + "!!!");
                 System.out.println("Please Re enter the pins to be knocked down");
                 currentPinsDown = scanner.nextInt();
@@ -143,10 +146,10 @@ public class BowlingGame {
         return currentPinsDown;
     }
 
-    private void countStrikeScore(int[] framesScore, int frame, int currentPinsDown) {
+    private void countStrikeScore(int[] framesScore, int frame, int currentPinsDown, boolean isSpare) {
         if (frame > 2) { // if frame is greater than 2, i.,e for example 3, then add currentPinsDown to framesScore[2] and framesScore[1]
             framesScore[frame - 1] += currentPinsDown; //add the points to previous
-            if (framesScore[frame - 2] >= 10) {// add to the previous of previous only if prev->prev was a strike. frameScore will be >=10 if it was a previous strike/spare
+            if (!isSpare && framesScore[frame - 2] >= 10) {// add to the previous of previous only if prev->prev was a strike. frameScore will be >=10 if it was a previous strike/spare
                 framesScore[frame - 2] += currentPinsDown; //add the points to previous of previous
             }
         } else {
